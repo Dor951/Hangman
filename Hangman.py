@@ -17,7 +17,7 @@ HANGMAN_ASCII_ART = ("""
                      |___/""")
 
 
-def is_valid_input(letter_guessed):
+def check_valid_input(letter_guessed, old_letters_guessed):
     if len(letter_guessed) > 1:
         if letter_guessed.isalpha():
             print("E1 more than 1")
@@ -30,18 +30,37 @@ def is_valid_input(letter_guessed):
         return False
     else:
         print("letter is:", letter_guessed.lower())
+        if letter_guessed.lower() not in (old_letters_guessed):
+            return True
+        else:
+            return False
+
+
+def try_update_letter_guessed(letter_guessed, old_letters_guessed):
+    if(check_valid_input(letter_guessed, old_letters_guessed)):
+        old_letters_guessed.append(letter_guessed)
         return True
+    else: 
+        print("X")
+        s = " -> "
+        old_letters_guessed.sort()
+        [x.lower() for x in old_letters_guessed]
+        old_letters_guessed = s.join(old_letters_guessed)
+        print(old_letters_guessed)
+        return False
 
 
 MAX_TRIES = 6
+old_letters = ['a', 'p', 'c', 'f']
 print(HANGMAN_ASCII_ART)
 print("Total number of tries:", MAX_TRIES)
 select_word = input("Please enter a word:", )
 print_space(select_word)
 letter = input("Guess a letter:", )
-print(is_valid_input(letter))
-
-print(random.randint(5, 10))
+# print(check_valid_input(letter, old_letters))
+print(try_update_letter_guessed(letter, old_letters))
+print("Guessed letters so far:", old_letters)
+# print(random.randint(5, 10))
 
 # print("""picture 1:
 #     x-------x""")
