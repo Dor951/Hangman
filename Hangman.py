@@ -1,8 +1,3 @@
-#last update 18.05
-
-import random
-import re
-
 HANGMAN_ASCII_ART = ("""
   _    _                                         
  | |  | |                                        
@@ -67,13 +62,13 @@ def print_space(word):
 def check_valid_input(letter_guessed, old_letters_guessed):
     if len(letter_guessed) > 1:
         if letter_guessed.isalpha():
-            print("E1 more than 1")
+            # print("E1 more than 1")
             return False
         elif not letter_guessed.isalpha():
-            print("E3 more than 1 and not english")
+            # print("E3 more than 1 and not english")
             return False
     elif len(letter_guessed) == 1 and not letter_guessed.isalpha():
-        print("E2 1 char not english")
+        # print("E2 1 char not english")
         return False
     else:
         # print("letter is:", letter_guessed.lower())
@@ -95,11 +90,9 @@ def try_update_letter_guessed(letter_guessed, old_letters_guessed):
         print(old_letters_guessed)
         return False
 
-# to go over the all list of old letters
 def show_hidden_word(secret_word, old_letters_guessed):
     hidden = print_space(secret_word)
     list_from_string = list(hidden)
-    # last_letter = old_letters_guessed[-1]
     for letter in old_letters_guessed:
         for i, char in enumerate(secret_word):
                 if char == letter:
@@ -115,10 +108,7 @@ def check_win(secret_word, old_letters_guessed):
     correct_Letters = [None] * len(secret_word)
     for letter in old_letters_guessed:
         if letter in secret_word:
-            # print("search for the letter: ", letter)
-            # print("location in the list is: ",secret_word.find(letter))
             correct_Letters[secret_word.find(letter)] = secret_word[secret_word.find(letter)]
-            # print("correct Letters list in loop is: ",correct_Letters)
         
     correct_Letters = [str(i or '_') for i in correct_Letters] 
     correct_Letters = ''.join(correct_Letters)
@@ -127,8 +117,6 @@ def check_win(secret_word, old_letters_guessed):
         return True
     else:
         # print("Not equal")
-        # print("correct Letters list in results is: ",correct_Letters)
-        # print("secret word  is: ",secret_word)
         return False
 
 def print_hangman(num_of_tries):
@@ -147,32 +135,37 @@ def choose_word(file_path, index):
     else:
         return(file_data[index-1])
 
+def wrong_guess(number_of_tries):
+        print("number of tries: ", number_of_tries)
+        number_of_tries += 1
+        print(HANGMAN_PHOTOS[number_of_tries])
+        return number_of_tries
+
 def main():
     MAX_TRIES = 7
     old_letters = []
     num_of_tries = 1
+    
     print(HANGMAN_ASCII_ART)
-
-    # file_path = input("Please enter the file path: ")
+    file_path = input("Please enter the file path: ")
     word_num = int(input("Please enter an index: "))
-    selected_word = (choose_word(r"words.txt", word_num))
+    selected_word = (choose_word(file_path, word_num))
     print("Total number of tries:", MAX_TRIES-1)
     print(HANGMAN_PHOTOS[num_of_tries])
-    
+    print(print_space(selected_word))
     while check_win(selected_word, old_letters) == False:
         letter = input("Guess a letter: ", ).lower()
-        # print(check_valid_input(letter, old_letters))
         if try_update_letter_guessed(letter, old_letters) == True:
+            if letter not in selected_word:
+                print(":(\n")
+                num_of_tries = wrong_guess(num_of_tries)
             print(show_hidden_word(selected_word, old_letters))
         else:
-            print("number of tries: ", num_of_tries)
-            num_of_tries += 1
-            print(HANGMAN_PHOTOS[num_of_tries])
-            if num_of_tries == MAX_TRIES:
-                print("You Lose")
-                break
+            print("Please Try Again.\n")
+        if num_of_tries == MAX_TRIES:
+            print("You Lose")
+            break
 
-    # print(random.randint(5, 10))
 
 if __name__ == "__main__":
     main()
